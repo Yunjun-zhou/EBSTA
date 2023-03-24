@@ -19,32 +19,56 @@ public class PlatformRevenueUtils {
         return alpha * s.getPrice() - (DistanceUtils.getDistance(t.getL(), w.getL()) < t.getR() ? 0d : beta * ExtraCostUtils.getExtraCost(t, w));
     }
 
+    public static double getPlatformRevenue(Skill s) {
+        //return alpha * s.getPrice() - (DistanceUtils.getDistance(t.getL(), w.getL()) < t.getR() ? 0d : beta * ExtraCostUtils.getExtraCost(t, w));
+        return alpha * s.getPrice();
+    }
+
+    public static double getPlatformRevenue(Task t, Worker w, List<Skill> skillList) {
+        double skillrevenue=0;
+        for(Skill s: skillList){
+            skillrevenue+=s.getPrice();
+        }
+        return alpha * skillrevenue - (DistanceUtils.getDistance(t.getL(), w.getL()) < t.getR() ? 0d : beta * ExtraCostUtils.getExtraCost(t, w));
+    }
+
+
     public static double getPlatformRevenue(MatchingPair matchingPair){
         AtomicReference<Double> temp = new AtomicReference<>(0d);
         Map<Integer, Integer> skillTW = matchingPair.getSkillTW();
+        double extracostrevenue = 0;
         try {
+            for(Worker w: matchingPair.getWorkers()){
+                extracostrevenue += DistanceUtils.getDistance(matchingPair.getTask().getL(), w.getL()) < matchingPair.getTask().getR() ? 0d : beta * ExtraCostUtils.getExtraCost(matchingPair.getTask(), w);
+            }
             Map<Integer, Skill> skillMap = DatasetUtils.skillMap();
-            skillTW.forEach((k,v)-> temp.updateAndGet(v1 -> v1 + getPlatformRevenue(matchingPair.getTask(),
-                    matchingPair.getWorkers().stream().filter(worker -> worker.getId() == v).findFirst().get(),
-                    skillMap.get(k))));
+            skillTW.forEach((k,v)-> temp.updateAndGet(v1 -> v1 + getPlatformRevenue(skillMap.get(k))));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return temp.get();
+        return temp.get() - extracostrevenue;
     }
 
     public static double getWorkerMaxRevenue(Task t, Worker w) {
         List<Skill> skills = t.getSList().stream().filter(s -> w.getSList().contains(s)).collect(Collectors.toList());
-        return skills.stream().mapToDouble(s -> getPlatformRevenue(t, w, s)).sum();
+        double skillrevenue=0;
+        for(Skill s: skills){
+            skillrevenue += alpha * s.getPrice();
+        }
+        double extracostrevenue = DistanceUtils.getDistance(t.getL(), w.getL()) < t.getR() ? 0d : beta * ExtraCostUtils.getExtraCost(t, w);
+        return skillrevenue - extracostrevenue;
     }
 
     public static double getWorkerRealRevenue(MatchingPair m, Worker w) {
         AtomicReference<Double> temp = new AtomicReference<>((double) 0);
         m.getSkillTW().forEach((k, v) -> {
-            if (v.equals(w.getId()))
-                temp.updateAndGet(v1 -> v1 + getPlatformRevenue(m.getTask(), w, w.getSList().stream().filter(s -> s.getId() == k).findFirst().get()));
+            if (v.equals(w.getId())) {
+                temp.updateAndGet(v1 -> v1 + getPlatformRevenue(w.getSList().stream().filter(s -> s.getId() == k).findFirst().get()));
+                //System.out.println(w.getSList().stream().filter(s -> s.getId() == k).findFirst().get());
+            }
         });
-        return temp.get();
+        double extracostrevenue = DistanceUtils.getDistance(m.getTask().getL(), w.getL()) < m.getTask().getR() ? 0d : beta * ExtraCostUtils.getExtraCost(m.getTask(), w);
+        return temp.get() - extracostrevenue;
     }
 
     public static double getVwsPriceSum(List<MatchingPair> list){

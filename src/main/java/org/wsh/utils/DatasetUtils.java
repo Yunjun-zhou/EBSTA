@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 
 public class DatasetUtils {
     static final String fileDir = System.getProperty("user.dir") + "/src/main/resources/";
-    static final String taskFile = "task.txt";
-    static final String workerFile = "worker.txt";
-    static final String skillFile = "skill.txt";
+    static final String taskFile = "task3.txt";
+    static final String workerFile = "worker3.txt";
+    static final String skillFile = "skill3.txt";
 
     // 数量
     static final int k_task = 1000;
-    static final int k_work = 5000;
-    static final int k_skill = 10;
+    static final int k_work = 3000;
+    static final int k_skill = 12;
 
     static final Double lng_max = 0.5;
     static final Double lng_min = 0.0;
@@ -27,9 +27,9 @@ public class DatasetUtils {
     static final Double lat_min = 0.0;
     static final Double price_max = 20d;
     static final Double price_min = 5d;
-    static final int range_max = 400;
-    static final int range_min = 300;
-    static final int range_fixed = 300;
+    static final int range_max = 1000;
+    static final int range_min = 800;
+    static final int range_fixed = 1000;
     static final int skill_min = 1;
     static final int skill_max = 5;
 

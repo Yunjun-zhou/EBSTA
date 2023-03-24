@@ -1,6 +1,5 @@
 package org.wsh.algorithm;
 
-import com.sun.media.jfxmediaimpl.HostUtils;
 import org.junit.jupiter.api.Test;
 import org.wsh.datastructure.MatchingPair;
 import org.wsh.datastructure.Task;
@@ -11,9 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class RandomAgmTest {
 

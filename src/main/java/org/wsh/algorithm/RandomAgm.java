@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 
 public class RandomAgm {
     public List<MatchingPair> calculate(List<Task> tasks, List<Worker> workers) {
+        /** 获取当前系统时间*/
+        long startTime =  System.currentTimeMillis();
         List<MatchingPair> m = new ArrayList<>();
         tasks.forEach(t -> {
             List<Worker> vws = new ArrayList<>();
@@ -40,6 +42,11 @@ public class RandomAgm {
                 m.add(matchingPair);
             }
         });
+        /** 获取当前的系统时间，与初始时间相减就是程序运行的毫秒数，除以1000就是秒数*/
+        long endTime =  System.currentTimeMillis();
+        long usedTime = (endTime-startTime);
+        System.out.println("算法运行时间："+usedTime);
+
         return m;
     }
 }
